@@ -95,4 +95,42 @@ Logout the current user and blacklist the token provided in cookie or headers
 
 Requires a valid JWT token in the Authorization header:
 
- 
+## Register Captain
+
+### Endpoint
+`POST /captain/register`
+
+### Description
+Registers a new captain.
+
+### Request Body
+- `email` (string, required): Captain's email address.
+- `fullname.firstname` (string, required): Captain's first name (minimum 3 characters).
+- `fullname.lastname` (string, required): Captain's last name (minimum 3 characters).
+- `password` (string, required): Captain's password (minimum 6 characters).
+- `vehicle.color` (string, required): Vehicle color (minimum 3 characters).
+- `vehicle.plate` (string, required): Vehicle plate number (minimum 3 characters).
+- `vehicle.capacity` (number, required): Vehicle capacity (minimum 1).
+- `vehicle.vehicleType` (string, required): Vehicle type (must be one of 'car', 'motorcycle', 'auto').
+
+### Response
+- `201 Created`: Returns the authentication token and captain details.
+- `400 Bad Request`: Returns validation errors if any required fields are missing or invalid.
+
+### Example
+```json
+{
+  "email": "captain@example.com",
+  "fullname": {
+    "firstname": "Jane",
+    "lastname": "Doe"
+  },
+  "password": "password123",
+  "vehicle": {
+    "color": "Red",
+    "plate": "ABC123",
+    "capacity": 4,
+    "vehicleType": "car"
+  }
+}
+
