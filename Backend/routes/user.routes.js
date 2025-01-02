@@ -25,3 +25,4 @@ userController.loginUser
 )
 module.exports = router
 
+router.get('/profile',userController.getProfile)
