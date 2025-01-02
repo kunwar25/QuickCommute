@@ -98,7 +98,7 @@ Requires a valid JWT token in the Authorization header:
 ## Register Captain
 
 ### Endpoint
-`POST /captain/register`
+`POST /captains/register`
 
 ### Description
 Registers a new captain.
@@ -133,4 +133,43 @@ Registers a new captain.
     "vehicleType": "car"
   }
 }
+```
+## Login Captain
+
+### Endpoint
+`POST /captains/login`
+
+### Description
+Logs in an existing captain.
+
+### Request Body
+- `email` (string, required): Captain's email address.
+- `password` (string, required): Captain's password (minimum 6 characters).
+
+### Response
+- `200 OK`: Returns the authentication token and captain details.
+- `400 Bad Request`: Returns validation errors if any required fields are missing or invalid.
+- `401 Unauthorized`: Returns if the email or password is incorrect.
+
+### Example
+```json
+{
+  "email": "captain@example.com",
+  "password": "password123"
+}
+```
+##  Captain profile
+
+Authenticate the captain with the auth middleware 
+and then after authenticating provide the user with 
+all information leaving password
+
+## Captain logout
+
+After this logout is performed with the help of token either present in the authorization header or 
+in the cookie
+
+
+
+
 
