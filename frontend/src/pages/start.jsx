@@ -9,7 +9,7 @@ const Start = () => {
 </img>
             <div className=" pb-8 py-4 px-4" >
             
-<h2 className="text-3xl font-semibold text-[#88D4AB] mt-4 ml-8">  
+<h2 className="text-3xl font-semibold text-[#88D4AB] mt-4 ml-8 text-center">  
     Get Started with QuickCommute
 </h2>
 <Link to ='/login'className="flex item-center justify-center  bg-[#FFC107] text-[#222931] w-full py-3 rounded mt-5">Continue</Link>

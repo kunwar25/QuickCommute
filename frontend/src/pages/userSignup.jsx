@@ -20,7 +20,7 @@ const UserSignup = () => {
 
 
     
-     const submitHandler = async (e) => {
+    const submitHandler = async (e) => {
     e.preventDefault()
     const newUser = {
       fullname: {
