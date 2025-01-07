@@ -9,19 +9,20 @@ import { useContext } from "react";
 const CaptainLogin = () => {   
 
     const [email, setEmail] = useState('');
-        const [password, setPassword] = useState('');
-        const [captainData, setCaptainData] = useState({});
-        const navigate = useNavigate();
-        const { captain, setCaptain } = useContext(CaptainDataContext);
+    const [password, setPassword] = useState('');
+    
+    const { captain, setCaptain } = useContext(CaptainDataContext);
+    const navigate = useNavigate();
+       
 
         const submitHandler = async (e) => {
             e.preventDefault();
-            const captainData = {
-                email,
+            const captain = {
+                email:email,
                 password
             }
 
-            const response = await axios.post(`${import.meta.env.VITE_BASE_URL}/captains/login`, captainData);
+            const response = await axios.post(`${import.meta.env.VITE_BASE_URL}/captains/login`, captain);
             if(response.status === 200) {
                 const data = response.data;
                 setCaptain(data.captain);
@@ -31,7 +32,7 @@ const CaptainLogin = () => {
 
             
             
-            console.log(captainData);
+           
             setEmail('');
             setPassword('');
             
