@@ -1,20 +1,15 @@
-import React, { useState } from "react";
+import React from "react";
 import { Link } from "react-router-dom";
 
-const ConfirmRidePopUp = (props) => { 
-    const[otp, setOtp] = useState('');   
-    
-    const submitHandler = (e) => {
-        e.preventDefault();
-    }   
+const FinishRide = (props) => {
     return(
         <div>
         <h5 className="p-1 w-[93%] text-center absolute top-0" onClick={()=>{
-            props.setRidePopUpPanel(false);
+            props.setFinishRidePanel(false);
      }}><i class="ri-arrow-down-wide-fill text-2xl font-semibold text-gray-400"></i></h5>
 
-     <h3 className="text-2xl font-semibold mb-5">Confirm this ride to start?  </h3>
-     <div className="flex items-center justify-between bg-yellow-400 rounded-lg p-3 mt-4">
+     <h3 className="text-2xl font-semibold mb-5">Finish Ride ?  </h3>
+     <div className="flex items-center justify-between border-2 border-yellow-400 rounded-lg p-4 mt-4 ">
         <div className="flex items-center gap-3">
             <img className="h-12 w-10 rounded-full object-cover" src="../images/user.jpg" alt="" />
             <h2 className="text-lg font-medium">
@@ -54,30 +49,19 @@ const ConfirmRidePopUp = (props) => {
      
 
     <div className="mt-6 w-full">
-    <form onSubmit={(e)=>{
-submitHandler(e);
-    }}>
-        <input  value = {otp} onChange={(e)=>setOtp(e.target.value)} className="bg-[#eee] px-6 py-4 font-mono text-lg rounded-lg w-full"
-              type="text" placeholder="Enter OTP" />
-
-<Link to='/captain-riding' 
+       
+<Link to='/captain-home' 
     
-    className=" text-lg mt-5 w-full flex justify-center bg-green-600 text-white font-semibold p-3 rounded-lg">Confirm </Link>
+    className=" text-lg mt-5 w-full flex justify-center bg-green-600 text-white font-semibold p-3 rounded-lg">Finish Ride </Link>
 
-<button 
-    onClick={()=>{
-        props.setConfirmRidePopUpPanel(false);
-        props.setRidePopUpPanel(false);
-    }}
-    className="mt-3 w-full bg-red-700 text-white font-semibold p-3 rounded-lg">Cancel </button>
-    </form>
+     <p className=" mt-10 text-xm">*Click on finish if you completed the payment </p>
+   
     </div>
     
     </div>
    </div>
-
     )
 
 }
 
-export default ConfirmRidePopUp;
+export default FinishRide;
