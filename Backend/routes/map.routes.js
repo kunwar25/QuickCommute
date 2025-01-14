@@ -13,16 +13,37 @@ router.get(
             .isLength({ min: 3 })
             .withMessage('Address must be at least 3 characters long')
     ],
-    authMiddleware.authUser, // Middleware for authentication
+    // authMiddleware.authUser, // Middleware for authentication
     mapController.getCoordinates // Controller to handle the logic
 );
 
-router.get('/get-distance-time',
-    query('origin')
-.isString().isLength({min:3}),
-query('destination').isString().isLength({min:3}),
-authMiddleware.authUser,
-mapController.getDistanceTime
-)
+
+// Route to get distance and time between a source and destination
+router.get(
+    '/get-distance-time',
+    [
+        query('source')
+            .isString()
+            .notEmpty()
+            .withMessage('Source is required and must be a valid address.'),
+        query('destination')
+            .isString()
+            .notEmpty()
+            .withMessage('Destination is required and must be a valid address.'),
+    ],
+    mapController.getDistanceTime
+);
+
+router.get('/get-suggestions',mapController.getSuggestions);
+
+
+
+
+
+
+
 
 module.exports = router;
+
+
+

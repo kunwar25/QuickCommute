@@ -1,15 +1,11 @@
 const axios = require('axios');
-const { validationResult } = require('express-validator');
 
-
-// Function to get coordinates from address
+// Function to get coordinates (eLoc) from address
 module.exports.getAddressCoordinate = async (address) => {
-    const axios = require('axios');
-    const apiKey = process.env.MAPMYINDIA_API_KEY; // Replace with your MapmyIndia API key
     const url = `https://atlas.mapmyindia.com/api/places/geocode?address=${encodeURIComponent(address)}`;
 
     try {
-        // First, get the access token
+        // Get the access token
         const tokenResponse = await axios.post(
             'https://outpost.mapmyindia.com/api/security/oauth/token',
             null,
@@ -24,94 +20,96 @@ module.exports.getAddressCoordinate = async (address) => {
 
         const accessToken = tokenResponse.data.access_token;
 
-        // Use the token to make the geocoding request
-        const response = await axios.get(url, 
-            {
+        // Make the geocoding request
+        const response = await axios.get(url, {
             headers: {
                 Authorization: `Bearer ${accessToken}`,
             },
-        },
+        });
 
-        
-        
-    );
+        // Access the eLoc from the copResults object
+        const eLoc = response.data.copResults?.eLoc;
 
-     
+        if (!eLoc) {
+            throw new Error('eLoc not found in the response. Please verify the address.');
+        }
+
+        return eLoc;
     } catch (err) {
-        console.log(err);
-        throw err;
+        console.error('Error in getAddressCoordinate:', err.response ? err.response.data : err.message);
+        throw new Error('Failed to fetch coordinates. Please check the address or try again later.');
     }
-    console.log("MapmyIndia API Response:", response.data);
-
-        return response.data.copResults || {};
-
-    
 };
-
-
-
-
 
 // Function to get distance and time between two locations
-module.exports.getDistanceTime = async (req, res) => {
+module.exports.getDistanceAndTime = async (source, destination) => {
+    const sourceEloc = await this.getAddressCoordinate(source); // Get the eLoc for the source
+    const destinationEloc = await this.getAddressCoordinate(destination); // Get the eLoc for the destination
+    const baseUrl = `https://apis.mapmyindia.com/advancedmaps/v1`;
+    const restKey = process.env.MAPMYINDIA_API_KEY; // Get the REST API key from the environment
+    const resource = "distance_matrix"; // Use "distance_matrix" as the resource
+    const profile = "driving"; // Set default profile as "driving"
+
+    // Combine source and destination eLocs into the required geopositions format
+    const geopositions = `${sourceEloc};${destinationEloc}`;
+
+    const url = `${baseUrl}/${restKey}/${resource}/${profile}/${geopositions}`;
+
     try {
-        // Validate request
-        const errors = validationResult(req);
-        if (!errors.isEmpty()) {
-            return res.status(400).json({ errors: errors.array() });
-        }
-
-        // Extract origin and destination from query params
-        let { origin, destination } = req.query;
-
-        // Check if origin and destination are provided
-        if (!origin || !destination) {
-            return res.status(400).json({ error: 'Origin and Destination are required' });
-        }
-
-        // Geocode origin to get lat/lng if it's an address
-        if (!origin.includes(',')) {
-            const originCoords = await getCoordinates(origin);
-            origin = `${originCoords.lat},${originCoords.lng}`;
-        }
-
-        // Geocode destination to get lat/lng if it's an address
-        if (!destination.includes(',')) {
-            const destinationCoords = await getCoordinates(destination);
-            destination = `${destinationCoords.lat},${destinationCoords.lng}`;
-        }
-
-        // Define MapmyIndia API URL
-        const apiKey = process.env.MAPMYINDIA_API_KEY;
-        const url = `https://apis.mapmyindia.com/advancedmaps/v1/${apiKey}/route_adv/driving/${origin};${destination}`;
-
-        // Send request to MapmyIndia API
+       
         const response = await axios.get(url);
 
-        // Check if the response is successful
-        if (response.data.status === 'OK') {
-            const elements = response.data.rows[0].elements[0];
+        
+        const { distances, durations } = response.data.results;
 
-            // Check if the result status is ZERO_RESULTS (no route found)
-            if (elements.status === 'ZERO_RESULTS') {
-                return res.status(404).json({ message: 'No route found' });
-            }
+       
+        const distance = distances[0][1]; 
+        const duration = durations[0][1]; 
 
-            // Extract distance and duration
-            const distance = elements.distance;
-            const duration = elements.duration;
-
-            // Respond with the distance and duration data
-            res.status(200).json({
-                distance: distance, // Distance in meters
-                duration: duration, // Duration in seconds
-            });
-        } else {
-            throw new Error('Unable to fetch distance and time');
-        }
+        return { distance, duration };
     } catch (err) {
-        // Handle any errors and send an appropriate response
-        console.error(err);
-        res.status(500).json({ message: 'Unable to fetch distance and time' });
+        console.error(
+            'Error in getDistanceAndTime:',
+            err.response ? err.response.data : err.message
+        );
+        throw new Error('Failed to fetch distance and time. Please try again later.');
     }
 };
+
+// Function to get suggestions for an incomplete address
+
+module.exports.getSuggestions = async (query) => {
+    const url = `https://atlas.mapmyindia.com/api/places/search/json?query=${encodeURIComponent(query)}`;
+
+    try {
+        // Get the access token
+        const tokenResponse = await axios.post(
+            'https://outpost.mapmyindia.com/api/security/oauth/token',
+            null,
+            {
+                params: {
+                    grant_type: 'client_credentials',
+                    client_id: process.env.MAPMYINDIA_CLIENT_ID,
+                    client_secret: process.env.MAPMYINDIA_CLIENT_SECRET,
+                },
+            }
+        );
+
+        const accessToken = tokenResponse.data.access_token;
+
+        // Make the search request
+        const response = await axios.get(url, {
+            headers: {
+                Authorization: `Bearer ${accessToken}`,
+            },
+        });
+
+        const suggestions = response.data.suggestedLocations;
+
+        return suggestions;
+    } catch (err) {
+        console.error('Error in getSuggestions:', err.response ? err.response.data : err.message);
+        throw new Error('Failed to fetch suggestions. Please try again later.');
+    }
+};
+
