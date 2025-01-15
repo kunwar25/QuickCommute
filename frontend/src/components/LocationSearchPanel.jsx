@@ -1,38 +1,44 @@
 import React from "react";
 
-const LocationSearchPanel = (props) => {
-
-    const locations = [
-        "24B, Near Kapoors's Cafe, Army Cantt, Kolkata",
-        "22B, Near Kirana Store, Armirul, Kolkata",
-        "21B, Near Raj Store, Amy Road, Kolkata",
-        "20D, Near Kaliram sweet shop, Sujad Colony, Kolkata",
-        "19B, Near Sujata's Medical Store, Kolkata",
-    ]
-
-
-
-
-
-
-    return (
-        <div>
-        {/* <h1>this is a sample data</h1> */}
-        {
-            locations.map((elem,idx)=>{
-                return  <div onClick={()=>{
-                    props.setVehiclePanelOpen(true);
-                    props.setPanelOpen(false);
-                    
-                }} className="flex items-center my-2 border-2 border-white active:border-black px-2 rounded-xl gap-4 justify-start">
-                <h2 className="bg-[#eee] h-8 w-12 flex items-center rounded-full justify-center  "><i className="ri-map-pin-fill "></i></h2>
-                <h4  className="font-medium ">{elem}</h4>
-            </div>
-            })
-}
-        
-        </div>
-    );
+const LocationSearchPanel = ({
+  suggestions,
+  setPanelOpen,
+  setVehiclePanelOpen,
+  setPickup,
+  setDestination,
+  activeField,
+}) => {
+  const handleSuggestionClick = (suggestion) => {
+    if (activeField === "pickup") {
+      setPickup(suggestion.name);
+    } else if (activeField === "destination") {
+      setDestination(suggestion.name);
     }
+    setVehiclePanelOpen(true); // Open vehicle panel
+    setPanelOpen(false); // Close suggestions panel
+  };
+
+  return (
+    <div>
+      {suggestions.length > 0 ? (
+        suggestions.map((suggestion, idx) => (
+          <div
+            key={idx}
+            onClick={() => handleSuggestionClick(suggestion)}
+            className="flex gap-4 border-2 p-3 border-gray-50 hover:border-black rounded-xl items-center my-2 cursor-pointer"
+          >
+            <i className="ri-map-pin-fill"></i>
+            <div>
+              <h4 className="font-medium">{suggestion.name}</h4>
+              <p className="text-sm text-gray-500">{suggestion.address}</p>
+            </div>
+          </div>
+        ))
+      ) : (
+        <p className="text-center text-gray-500">No suggestions found.</p>
+      )}
+    </div>
+  );
+};
 
 export default LocationSearchPanel;

@@ -78,38 +78,47 @@ module.exports.getDistanceAndTime = async (source, destination) => {
 
 // Function to get suggestions for an incomplete address
 
+
 module.exports.getSuggestions = async (query) => {
-    const url = `https://atlas.mapmyindia.com/api/places/search/json?query=${encodeURIComponent(query)}`;
+  const url = `https://atlas.mapmyindia.com/api/places/search/json?query=${encodeURIComponent(query)}`;
 
-    try {
-        // Get the access token
-        const tokenResponse = await axios.post(
-            'https://outpost.mapmyindia.com/api/security/oauth/token',
-            null,
-            {
-                params: {
-                    grant_type: 'client_credentials',
-                    client_id: process.env.MAPMYINDIA_CLIENT_ID,
-                    client_secret: process.env.MAPMYINDIA_CLIENT_SECRET,
-                },
-            }
-        );
+  try {
+    // Get the access token
+    const tokenResponse = await axios.post(
+      "https://outpost.mapmyindia.com/api/security/oauth/token",
+      null,
+      {
+        params: {
+          grant_type: "client_credentials",
+          client_id: process.env.MAPMYINDIA_CLIENT_ID,
+          client_secret: process.env.MAPMYINDIA_CLIENT_SECRET,
+        },
+      }
+    );
 
-        const accessToken = tokenResponse.data.access_token;
+    const accessToken = tokenResponse.data.access_token;
 
-        // Make the search request
-        const response = await axios.get(url, {
-            headers: {
-                Authorization: `Bearer ${accessToken}`,
-            },
-        });
+    // Make the search request
+    const response = await axios.get(url, {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    });
 
-        const suggestions = response.data.suggestedLocations;
+    const suggestions = response.data.suggestedLocations.map((location) => ({
+      name: location.placeName,
+      address: location.placeAddress,
+      eLoc: location.eLoc,
+    }));
 
-        return suggestions;
-    } catch (err) {
-        console.error('Error in getSuggestions:', err.response ? err.response.data : err.message);
-        throw new Error('Failed to fetch suggestions. Please try again later.');
-    }
+    return suggestions;
+  } catch (err) {
+    console.error(
+      "Error in getSuggestions:",
+      err.response ? err.response.data : err.message
+    );
+    throw new Error("Failed to fetch suggestions. Please try again later.");
+  }
 };
+
 

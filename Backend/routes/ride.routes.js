@@ -8,7 +8,7 @@ router.post('/create',
    authMiddleware.authUser,
     body('source').isString().isLength({min:3}).withMessage('Source is required'),
     body('destination').isString().isLength({min:3}).withMessage('Destination is required'),
-    body('vehicleType').isString().isIn(['auto','motorcycle','car']).withMessage('Invalid vehicle type'),
+    body('vehicleType').isString().isIn(['auto','moto','car']).withMessage('Invalid vehicle type'),
 
     rideController.createRide
 )

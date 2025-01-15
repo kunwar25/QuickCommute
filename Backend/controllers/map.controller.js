@@ -34,13 +34,12 @@ module.exports.getDistanceTime = async (req, res) => {
     }
 };
 
-
-module.exports.getSuggestions = async (req,res) => {
-    const {query} = req.query;
+module.exports.getSuggestions = async (req, res) => {
+    const { query } = req.query;
     try {
         const suggestions = await mapService.getSuggestions(query);
-        res.status(200).json({success:true,data:suggestions});
+        res.status(200).json({ success: true, data: suggestions });
     } catch (err) {
-        res.status(500).json({success:false,message:err.message});
+        res.status(500).json({ success: false, message: err.message });
     }
-}
+};
