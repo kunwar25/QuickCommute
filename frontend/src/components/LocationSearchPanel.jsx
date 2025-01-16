@@ -14,8 +14,8 @@ const LocationSearchPanel = ({
     } else if (activeField === "destination") {
       setDestination(suggestion.name);
     }
-    setVehiclePanelOpen(true); // Open vehicle panel
-    setPanelOpen(false); // Close suggestions panel
+    // setVehiclePanelOpen(true); // Open vehicle panel
+    // setPanelOpen(false); // Close suggestions panel
   };
 
   return (
@@ -35,7 +35,7 @@ const LocationSearchPanel = ({
           </div>
         ))
       ) : (
-        <p className="text-center text-gray-500">No suggestions found.</p>
+        <p className="text-center text-gray-500"></p>
       )}
     </div>
   );

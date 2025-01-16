@@ -3,62 +3,69 @@ const mapService = require('./maps.service');
 const crypto = require('crypto');
 
 async function getFare(pickup, drop) {
+    // Log the inputs
+    console.log('Pickup location:', pickup);
+    console.log('Drop location:', drop);
+
+    // Validate inputs
     if (!pickup || !drop) {
         throw new Error('Pickup and drop locations are required');
     }
 
-    // Fetch distance and time from the map service
-    const response = await mapService.getDistanceAndTime(pickup, drop);
+    try {
+        // Fetch distance and time from the map service
+        const response = await mapService.getDistanceAndTime(pickup, drop);
+        console.log('Response from map service:', response);
 
-    console.log('Response from map service:', response); // Log the response for debugging
-
-    // Check if response is valid and contains distance and duration
-    if (!response || typeof response !== 'object' || !response.distance || !response.duration) {
-        throw new Error('Invalid response from map service');
-    }
-
-    // Destructure distance and duration directly from the response
-    const { distance, duration } = response; 
-
-    if (isNaN(distance) || isNaN(duration)) {
-        throw new Error('Invalid distance or duration received from the map service');
-    }
-
-    const baseFare = {
-        auto: 30,
-        moto: 20,
-        car: 50,
-    };
-
-    const farePerMeter = {
-        auto: 0.5,
-        moto: 0.3,
-        car: 1,
-    };
-
-    const farePerSecond = {
-        auto: 0.02,
-        moto: 0.01,
-        car: 0.03,
-    };
-
-    const calculateFare = (vehicleType) => {
-        if (!baseFare[vehicleType] || !farePerMeter[vehicleType] || !farePerSecond[vehicleType]) {
-            throw new Error('Invalid vehicle type');
+        if (!response || typeof response !== 'object' || !response.distance || !response.duration) {
+            throw new Error('Invalid response from map service');
         }
-        return (
-            baseFare[vehicleType] +
-            (distance * farePerMeter[vehicleType] )/1000+
-            (duration * farePerSecond[vehicleType])
-        );
-    };
 
-    return {
-        auto: calculateFare('auto'),
-        moto: calculateFare('moto'),
-        car: calculateFare('car'),
-    };
+        const { distance, duration } = response;
+
+        if (isNaN(distance) || isNaN(duration)) {
+            throw new Error('Invalid distance or duration received from the map service');
+        }
+
+        const baseFare = {
+            auto: 30,
+            moto: 20,
+            car: 50,
+        };
+
+        const perKmRate = {
+            auto: 10,
+            car: 15,
+            moto: 8,
+        };
+
+        const perMinuteRate = {
+            auto: 2,
+            car: 3,
+            moto: 1.5,
+        };
+
+        const calculateFare = {
+            auto: Math.round(
+                baseFare.auto + (distance / 1000) * perKmRate.auto + (duration / 60) * perMinuteRate.auto
+            ),
+            car: Math.round(
+                baseFare.car + (distance / 1000) * perKmRate.car + (duration / 60) * perMinuteRate.car
+            ),
+            moto: Math.round(
+                baseFare.moto + (distance / 1000) * perKmRate.moto + (duration / 60) * perMinuteRate.moto
+            ),
+        };
+
+        return calculateFare;
+    } catch (error) {
+        console.error('Error in getFare:', error.message);
+        throw error;
+    }
 }
+
+
+module.exports.getFare = getFare;
 
 function getOtp(num){
     if (!num || isNaN(num) || num <= 0) {
