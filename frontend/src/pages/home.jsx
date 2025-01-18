@@ -8,6 +8,9 @@ import VehiclePanel from "../components/VehiclePanel";
 import ConfirmRide from "../components/ConfirmRide";
 import LookingForDriver from "../components/LookingForDriver";
 import WaitingForDriver from "../components/WaitingForDriver";
+import { SocketContext } from "../context/socketContext";
+import { UserDataContext } from "../context/userContext";
+import { useContext } from "react";
 
 
 const Home = () => {
@@ -23,6 +26,14 @@ const Home = () => {
   const [activeField, setActiveField] = useState(null);
   const[fare,setFare] = useState({});
   const [vehicleType,setVehicleType] = useState(null);
+  
+  const { socket } = useContext(SocketContext);
+  const { user } = useContext(UserDataContext);
+
+  useEffect(()=>{
+
+    socket.emit("join",{userId:user._id,userType:"user"})
+  },[user])
 
 const handlePickupChange = async (e) => {
   const value = e.target.value;
@@ -254,6 +265,7 @@ const handleDestinationChange = async (e) => {
           fare = {fare}
           vehicleType = {vehicleType}
           createRide = {createRide}
+         
           setConfirmRidePanel={setConfirmRidePanel} setVehicleFound = {setVehicleFound} />
         </div>
         <div
