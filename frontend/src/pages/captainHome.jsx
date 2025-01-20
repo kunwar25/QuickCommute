@@ -8,7 +8,9 @@ import ConfirmRidePopUp from "../components/ConfirmRidePopUp";
 import { useEffect,useContext } from "react";
 import { SocketContext } from "../context/socketContext";
 import { CaptainDataContext } from "../context/captainContext";
+import axios from "axios";
 import { use } from "react";
+
 const CaptainHome = () => {
 
     const [ridePopUpPanel, setRidePopUpPanel] = useState(false);
@@ -56,21 +58,31 @@ const CaptainHome = () => {
       
     },[])
 
-    socket.on('new-ride',(data)=>{
-      // console.log(data);
-      setRide(data);
-      setRidePopUpPanel(true);
-      
-    })
+    socket.on('new-ride', (data) => {
 
-    async function confirmRide(){
+      setRide(data)
+      setRidePopUpPanel(true)
 
-      const respose = await axios.post(`${import.meta.env.VITE_BASE_URL}/rides/confirm`,{})
-    
-      setConfirmRidePopUpPanel(true);
-      setRidePopUpPanel(false);
-    
-    }
+  })
+
+  async function confirmRide() {
+
+      const response = await axios.post(`${import.meta.env.VITE_BASE_URL}/rides/confirm`, {
+
+          rideId: ride._id,
+          captainId: captain._id,
+
+
+      }, {
+          headers: {
+              Authorization: `Bearer ${localStorage.getItem('token')}`
+          }
+      })
+
+      setRidePopUpPanel(false)
+      setConfirmRidePopUpPanel(true)
+
+  }
 
     useGSAP(() => {
         if (ridePopUpPanel) {
@@ -124,13 +136,14 @@ const CaptainHome = () => {
              ride = {ride}
              setRidePopUpPanel = {setRidePopUpPanel} 
              setConfirmRidePopUpPanel = {setConfirmRidePopUpPanel}
+             confirmRide = {confirmRide}
              />
         
         </div>
         <div ref = {ConfirmRidePopUpPanelRef} className="fixed w-full z-10 h-screen  translat-y-full bottom-0 px-3 py-10 bg-white  pt-12">
              
              <ConfirmRidePopUp 
-             confirmRide = {confirmRide}
+             ride = {ride}
              setConfirmRidePopUpPanel = {setConfirmRidePopUpPanel} setRidePopUpPanel = {setRidePopUpPanel}  />
         
         </div>
