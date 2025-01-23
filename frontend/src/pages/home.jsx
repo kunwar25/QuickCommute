@@ -12,6 +12,7 @@ import { SocketContext } from "../context/socketContext";
 import { UserDataContext } from "../context/userContext";
 import { useContext } from "react";
 import { useNavigate } from "react-router-dom";
+import LiveTracking from "../components/LiveTracking";
 
 const Home = () => {
   const [pickup, setPickup] = useState("");
@@ -199,11 +200,7 @@ const handleDestinationChange = async (e) => {
 
       {/* Background */}
       <div className="h-screen w-screen">
-        <img
-          className="h-full w-full object-cover"
-          src="https://www.uberpeople.net/attachments/381410/"
-          alt="Background"
-        />
+        {/* <LiveTracking /> */}
       </div>
 
       {/* Main Content */}
@@ -220,7 +217,7 @@ const handleDestinationChange = async (e) => {
           </h5>
 
           <h4 className="text-2xl font-semibold">Find a trip</h4>
-          <div>
+          <div >
             <input
               value={pickup}
               onChange={handlePickupChange}

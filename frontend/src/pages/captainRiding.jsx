@@ -5,6 +5,7 @@ import { useState } from "react";
 import FinishRide from "../components/FinishRide";
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
+import LiveTracking from "../components/LiveTracking";
 
 
 
@@ -40,11 +41,7 @@ const CaptainRiding = () => {
         </div>
          <div className="h-4/5">
          
-         <img
-       className="h-full w-full object-cover"
-       src="https://www.uberpeople.net/attachments/381410/"
-       alt="Background"
-     ></img>
+        <LiveTracking  className="h-full w-full object-cover"/>
          </div>
             
          <div className="h-1/5 relative p-6 bg-yellow-400 flex  items-center justify-between
@@ -64,7 +61,7 @@ const CaptainRiding = () => {
          
          <div ref = {finishRidePanelRef} className="fixed w-full z-10  translat-y-full bottom-0 px-3 py-10 bg-white  pt-12">
              
-             <FinishRide ride = {rideData} setFinishRidePanel = {setFinishRidePanel}/>
+             <FinishRide ride = {rideData} setFinishRidePanel = {setFinishRidePanel} setpo/>
         
         </div>
 

@@ -10,6 +10,7 @@ import { SocketContext } from "../context/socketContext";
 import { CaptainDataContext } from "../context/captainContext";
 import axios from "axios";
 import { use } from "react";
+import LiveTracking from "../components/LiveTracking";
 
 const CaptainHome = () => {
 
@@ -119,11 +120,7 @@ const CaptainHome = () => {
            </div>
             <div className="h-3/5">
             
-            <img
-          className="h-full w-full object-cover"
-          src="https://www.uberpeople.net/attachments/381410/"
-          alt="Background"
-        ></img>
+           <LiveTracking className="h-full w-full object-cover"/>
             </div>
 
             <div className="h-2/5 p-6">

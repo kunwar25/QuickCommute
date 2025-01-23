@@ -3,7 +3,7 @@ import { Link,useLocation } from "react-router-dom";
 import { useContext } from "react";
 import { SocketContext } from "../context/socketContext";
 import { useNavigate } from "react-router-dom";
-
+import LiveTracking from "../components/LiveTracking";
 const Riding = () => { 
     const location = useLocation();
     const { ride } = location.state || {};
@@ -22,11 +22,7 @@ const Riding = () => {
             </Link>
             <div className="h-1/2">
             
-            <img
-          className="h-full w-full object-cover"
-          src="https://www.uberpeople.net/attachments/381410/"
-          alt="Background"
-        ></img>
+           <LiveTracking className="h-full w-full object-cover z-[-1]"/>
             </div>
 
             <div className="h-1/2 p-4">
