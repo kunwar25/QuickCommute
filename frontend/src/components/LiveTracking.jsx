@@ -1,90 +1,61 @@
-import React, { useState, useEffect } from 'react';
-
-const containerStyle = {
-    width: '100%',
-    height: '100%',
-};
-
-const center = {
-    lat: -3.745,
-    lng: -38.523,
-};
+import React, { useEffect } from "react";
 
 const LiveTracking = () => {
-    const [currentPosition, setCurrentPosition] = useState(center);
+  useEffect(() => {
+    let map = null;
 
-    useEffect(() => {
-        // Get the initial position
-        navigator.geolocation.getCurrentPosition((position) => {
+    const initializeMap = () => {
+      // Initialize the MapmyIndia map
+      map = new window.MapmyIndia.Map("map", {
+        center: [18.6069, 73.8751], // Default location (latitude, longitude)
+        zoom: 10,
+      });
+
+      // Use browser's Geolocation API for live location
+      if (navigator.geolocation) {
+        navigator.geolocation.watchPosition(
+          (position) => {
             const { latitude, longitude } = position.coords;
-            setCurrentPosition({
-                lat: latitude,
-                lng: longitude,
-            });
-        });
 
-        // Watch position for live tracking
-        const watchId = navigator.geolocation.watchPosition((position) => {
-            const { latitude, longitude } = position.coords;
-            setCurrentPosition({
-                lat: latitude,
-                lng: longitude,
-            });
-        });
+            // Check if map is initialized before adding/updating marker
+            if (map) {
+              if (!window.liveMarker) {
+                window.liveMarker = new window.L.Marker([latitude, longitude]).addTo(map);
+              } else {
+                window.liveMarker.setLatLng([latitude, longitude]);
+              }
+            }
+          },
+          (error) => {
+            console.error("Error getting location:", error);
+          }
+        );
+      } else {
+        alert("Geolocation is not supported by this browser.");
+      }
+    };
 
-        return () => navigator.geolocation.clearWatch(watchId);
-    }, []);
+    // Ensure MapmyIndia SDK is loaded before initializing the map
+    if (window.MapmyIndia) {
+      initializeMap();
+    } else {
+      console.error("MapmyIndia SDK not loaded.");
+    }
 
-    useEffect(() => {
-        let map;
-        let marker;
+    return () => {
+      if (map) {
+        map.remove();
+        map = null;
+      }
+      window.liveMarker = null;
+    };
+  }, []);
 
-        const loadMap = () => {
-            map = new mapmyindia.Map('mapContainer', {
-                center: [currentPosition.lat, currentPosition.lng],
-                zoom: 15,
-            });
-
-            marker = new mapmyindia.Marker({
-                map: map,
-                position: [currentPosition.lat, currentPosition.lng],
-            });
-        };
-
-        loadMap();
-
-        const intervalId = setInterval(() => {
-            navigator.geolocation.getCurrentPosition((position) => {
-                const { latitude, longitude } = position.coords;
-
-                console.log('Position updated:', latitude, longitude);
-
-                setCurrentPosition({
-                    lat: latitude,
-                    lng: longitude,
-                });
-
-                // Update marker position
-                if (marker) {
-                    marker.setPosition([latitude, longitude]);
-                }
-
-                // Center map on new position
-                if (map) {
-                    map.setCenter([latitude, longitude]);
-                }
-            });
-        }, 1000);
-
-        return () => clearInterval(intervalId);
-    }, [currentPosition]);
-
-    return (
-        <div
-            id="mapContainer"
-            style={containerStyle}
-        />
-    );
+  return (
+    
+      <div id="map" className="top-0 left-0 h-[68%] w-full"></div>
+    
+  );
 };
 
 export default LiveTracking;

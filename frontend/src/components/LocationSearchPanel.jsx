@@ -10,9 +10,9 @@ const LocationSearchPanel = ({
 }) => {
   const handleSuggestionClick = (suggestion) => {
     if (activeField === "pickup") {
-      setPickup(suggestion.name);
+      setPickup(suggestion.name + ", "+suggestion.address);
     } else if (activeField === "destination") {
-      setDestination(suggestion.name);
+      setDestination(suggestion.name + ", "+ suggestion.address);
     }
     // setVehiclePanelOpen(true); // Open vehicle panel
     // setPanelOpen(false); // Close suggestions panel
@@ -20,15 +20,16 @@ const LocationSearchPanel = ({
 
   return (
     <div>
-      {suggestions.length > 0 ? (
-        suggestions.map((suggestion, idx) => (
-          <div
+      <div className="mt-10"></div>
+      {suggestions.slice(0, 5).length > 0 ? (
+        suggestions.slice(0, 5).map((suggestion, idx) => (
+          <div 
             key={idx}
             onClick={() => handleSuggestionClick(suggestion)}
-            className="flex gap-4 border-2 p-3 border-gray-50 hover:border-black rounded-xl items-center my-2 cursor-pointer"
+            className="flex gap-1 border-2 p-2 border-gray-50 hover:border-blue rounded-xl items-center cursor-pointer"
           >
-            <i className="ri-map-pin-fill"></i>
-            <div>
+            <i className="px-5 ri-map-pin-fill"></i>
+            <div className="px-2">
               <h4 className="font-medium">{suggestion.name}</h4>
               <p className="text-sm text-gray-500">{suggestion.address}</p>
             </div>
@@ -37,6 +38,7 @@ const LocationSearchPanel = ({
       ) : (
         <p className="text-center text-gray-500"></p>
       )}
+     
     </div>
   );
 };

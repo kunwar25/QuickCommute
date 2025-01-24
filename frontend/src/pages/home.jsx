@@ -28,7 +28,7 @@ const Home = () => {
   const[fare,setFare] = useState({});
   const [vehicleType,setVehicleType] = useState(null);
   const[ride,setRide] = useState(null);
-  
+  const [liveTrackingVisible, setLiveTrackingVisible] = useState(true);
   const { socket } = useContext(SocketContext);
   const { user } = useContext(UserDataContext);
   const navigate = useNavigate();
@@ -55,6 +55,7 @@ socket.on('ride-started',ride=>{
 const handlePickupChange = async (e) => {
   const value = e.target.value;
   setPickup(value);
+  setLiveTrackingVisible(false);
 
   if (value.length < 3) {
     // Clear suggestions if input is less than 3 characters
@@ -87,6 +88,7 @@ const handlePickupChange = async (e) => {
 const handleDestinationChange = async (e) => {
   const value = e.target.value;
   setDestination(value);
+  setLiveTrackingVisible(false);
 
   if (value.length < 3) {
     // Clear suggestions if input is less than 3 characters
@@ -123,7 +125,10 @@ const handleDestinationChange = async (e) => {
   const vehicleFoundRef = useRef(null);
   const waitingForDriverRef = useRef(null);
   
-
+  const togglePanel = () => {
+    setPanelOpen(!panelOpen);
+    setLiveTrackingVisible(false); // Hide live tracking panel when the arrow is clicked
+  };
 
 
 
@@ -193,22 +198,26 @@ const handleDestinationChange = async (e) => {
     <div className="h-screen relative overflow-hidden">
       {/* Logo */}
       <img
-        className="w-16 absolute left-5 top-5"
-        src="../images/quickcommutelogo.jpg"
+        className="w-16 h-10 absolute left-5 top-5"
+        src="../images/quickcommutelogo.png"
         alt="QuickCommute Logo"
       />
 
       {/* Background */}
-      <div className="h-screen w-screen">
-        {/* <LiveTracking /> */}
+      <div
+        className={`h-full w-screen absolute top-0 left-0  ${
+          liveTrackingVisible ? "z-[-1]" : "z-[-1]"
+        }`}
+      >
+        <LiveTracking />
       </div>
 
       {/* Main Content */}
-      <div className="flex flex-col justify-end absolute h-screen top-0 w-full">
+      <div className="flex flex-col justify-end absolute h-screen top-0 w-full ">
         {/* Top Panel */}
         <div className="h-[30%] p-6 bg-white relative">
           <h5
-            onClick={() => setPanelOpen(!panelOpen)}
+            onClick={togglePanel}
             className="absolute top-6 right-6 text-xl cursor-pointer"
           >
             <i
@@ -216,20 +225,25 @@ const handleDestinationChange = async (e) => {
             ></i>
           </h5>
 
-          <h4 className="text-2xl font-semibold">Find a trip</h4>
+          <h4 className=" text-2xl text-[#1E88E5] font-semibold">Find a trip</h4>
           <div >
             <input
               value={pickup}
               onChange={handlePickupChange}
               onClick={() => setPanelOpen(true)}
-              className="bg-gray-200 px-4 py-2 rounded-lg w-full mt-2"
+              
+              className=" mt-5 w-full px-4 py-2 text-sm border-2 border-gray-300 rounded-lg bg-gray-100 
+             focus:outline-none focus:border-blue-500 focus:bg-white 
+              placeholder-gray-500"
               placeholder="Add a pick-up location"
             />
             <input
               value={destination}
               onChange={handleDestinationChange}
               onClick={() => setPanelOpen(true)}
-              className="bg-gray-200 px-4 py-2 rounded-lg w-full mt-3"
+              className=" mt-2 w-full px-4 py-2 text-sm border-2 border-gray-300 rounded-lg bg-gray-100 
+              focus:outline-none focus:border-yellow-500 focus:bg-white 
+               placeholder-gray-500 mb-2"
               placeholder="Enter your destination"
             />
             {/* <button className="bg-black text-white px-4 py-2 rounded mt-4 w-full">
@@ -239,7 +253,8 @@ const handleDestinationChange = async (e) => {
 
           <button 
           onClick={findTrip}
-          className="bg-black text-white px-4 py-2 rounded mt-4 w-full">
+          className="bg-blue-600 text-white font-semibold py-1 px-6 rounded-xl shadow-md 
+                   hover:bg-blue-700 w-full mt-3 mb-5">
             Find trip
           </button>
         </div>
@@ -285,7 +300,9 @@ const handleDestinationChange = async (e) => {
           ref={vehicleFoundRef}
           className="fixed w-full z-10 bottom-0 px-3 py-6 bg-white translate-y-full pt-12"
         >
-          <LookingForDriver setVehicleFound={setVehicleFound}
+          <LookingForDriver
+          
+           setVehicleFound={setVehicleFound}
           pickup = {pickup}
           destination = {destination}
           fare = {fare}

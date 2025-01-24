@@ -22,7 +22,7 @@ const Riding = () => {
             </Link>
             <div className="h-1/2">
             
-           <LiveTracking className="h-full w-full object-cover z-[-1]"/>
+           <LiveTracking className="h-screen w-screen object-cover z-[-1]"/>
             </div>
 
             <div className="h-1/2 p-4">

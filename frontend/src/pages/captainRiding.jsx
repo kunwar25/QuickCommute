@@ -10,7 +10,7 @@ import LiveTracking from "../components/LiveTracking";
 
 
 const CaptainRiding = () => {
-
+    const [liveTrackingVisible, setLiveTrackingVisible] = useState(true);
     const [finishRidePanel, setFinishRidePanel] = useState(false);
     const finishRidePanelRef = useRef(null);
     const location = useLocation();
@@ -39,12 +39,15 @@ const CaptainRiding = () => {
              <i className="text-lg font-medium ri-logout-box-r-line"></i>
          </Link>
         </div>
-         <div className="h-4/5">
-         
-        <LiveTracking  className="h-full w-full object-cover"/>
-         </div>
+        <div
+        className={`h-screen w-screen absolute top-0 left-0  ${
+          liveTrackingVisible ? "z-[-1]" : "z-[-1]"
+        }`}
+      >
+        <LiveTracking />
+      </div>
             
-         <div className="h-1/5 relative p-6 bg-yellow-400 flex  items-center justify-between
+         <div className="h-1/5 relative p-6 bg-yellow-400 top-[80%] flex  items-center justify-between
          "
          onClick={()=>{
             setFinishRidePanel(true);
@@ -59,9 +62,9 @@ const CaptainRiding = () => {
          </div>
 
          
-         <div ref = {finishRidePanelRef} className="fixed w-full z-10  translat-y-full bottom-0 px-3 py-10 bg-white  pt-12">
+         <div ref = {finishRidePanelRef} className="fixed w-full z-10  translate-y-full bottom-0 px-3 py-10 bg-white  pt-12">
              
-             <FinishRide ride = {rideData} setFinishRidePanel = {setFinishRidePanel} setpo/>
+             <FinishRide ride = {rideData} setFinishRidePanel = {setFinishRidePanel} />
         
         </div>
 
