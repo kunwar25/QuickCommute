@@ -21,8 +21,8 @@ const LocationSearchPanel = ({
   return (
     <div>
       <div className="mt-10"></div>
-      {suggestions.slice(0, 5).length > 0 ? (
-        suggestions.slice(0, 5).map((suggestion, idx) => (
+      {suggestions.slice(0, 10).length > 0 ? (
+        suggestions.slice(0, 10).map((suggestion, idx) => (
           <div 
             key={idx}
             onClick={() => handleSuggestionClick(suggestion)}

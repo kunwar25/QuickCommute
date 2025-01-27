@@ -226,35 +226,46 @@ const handleDestinationChange = async (e) => {
           </h5>
 
           <h4 className=" text-2xl text-[#1E88E5] font-semibold">Find a trip</h4>
-          <div >
+
+          <form className='relative py-3' onSubmit={(e) => {
+                        submitHandler(e)
+                    }}>
+
+<div className="line absolute h-16 w-1 top-[50%] -translate-y-1/2 left-5 bg-gray-700 rounded-full"></div>
+
+          
             <input
               value={pickup}
               onChange={handlePickupChange}
-              onClick={() => setPanelOpen(true)}
+              onClick={() => {
+                setPanelOpen(true)
+                setActiveField('pickup')
+            }}
               
-              className=" mt-5 w-full px-4 py-2 text-sm border-2 border-gray-300 rounded-lg bg-gray-100 
+              className="  w-full px-12 py-2 text-sm border-2 border-gray-300 rounded-lg bg-gray-100 
              focus:outline-none focus:border-blue-500 focus:bg-white 
               placeholder-gray-500"
               placeholder="Add a pick-up location"
             />
-            <input
-              value={destination}
-              onChange={handleDestinationChange}
-              onClick={() => setPanelOpen(true)}
-              className=" mt-2 w-full px-4 py-2 text-sm border-2 border-gray-300 rounded-lg bg-gray-100 
-              focus:outline-none focus:border-yellow-500 focus:bg-white 
-               placeholder-gray-500 mb-2"
-              placeholder="Enter your destination"
-            />
+             <input
+                            onClick={() => {
+                                setPanelOpen(true)
+                                setActiveField('destination')
+                            }}
+                            value={destination}
+                            onChange={handleDestinationChange}
+                            className='bg-[#eee] px-12 py-2 text-lg rounded-lg w-full  mt-3'
+                            type="text"
+                            placeholder='Enter your destination' />
             {/* <button className="bg-black text-white px-4 py-2 rounded mt-4 w-full">
               Search
             </button> */}
-          </div>
-
+          
+          </form>
           <button 
           onClick={findTrip}
-          className="bg-blue-600 text-white font-semibold py-1 px-6 rounded-xl shadow-md 
-                   hover:bg-blue-700 w-full mt-3 mb-5">
+          className="bg-blue-600 text-white font-semibold py-2 px-4 rounded-xl shadow-md 
+                   hover:bg-blue-700 w-full mt-3 ">
             Find trip
           </button>
         </div>
@@ -296,23 +307,18 @@ const handleDestinationChange = async (e) => {
          
           setConfirmRidePanel={setConfirmRidePanel} setVehicleFound = {setVehicleFound} />
         </div>
-        <div
-          ref={vehicleFoundRef}
-          className="fixed w-full z-10 bottom-0 px-3 py-6 bg-white translate-y-full pt-12"
-        >
-          <LookingForDriver
-          
-           setVehicleFound={setVehicleFound}
-          pickup = {pickup}
-          destination = {destination}
-          fare = {fare}
-          vehicleType = {vehicleType}
-          createRide = {createRide}
-           />
-        </div>
+        <div ref={vehicleFoundRef} className='fixed w-full z-10 bottom-0 translate-y-full bg-white px-3 py-6 pt-12'>
+                <LookingForDriver
+                    createRide={createRide}
+                    pickup={pickup}
+                    destination={destination}
+                    fare={fare}
+                    vehicleType={vehicleType}
+                    setVehicleFound={setVehicleFound} />
+            </div>
         <div
           ref={waitingForDriverRef}
-          className="fixed w-full z-10 bottom-0 px-3 py-6 bg-white translate-y-full pt-12"
+          className="fixed w-full z-10 bottom-0 px-3 py-6 bg-white pt-12"
         >
           <WaitingForDriver 
           setWaitingForDriver={setWaitingForDriver}
